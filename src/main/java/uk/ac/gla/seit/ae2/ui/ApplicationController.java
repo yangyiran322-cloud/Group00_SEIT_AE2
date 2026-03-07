@@ -1,31 +1,51 @@
 package uk.ac.gla.seit.ae2.ui;
 
+import uk.ac.gla.seit.ae2.repository.RequirementRepository;
+import uk.ac.gla.seit.ae2.repository.TeacherRepository;
+import uk.ac.gla.seit.ae2.service.RequirementService;
+import uk.ac.gla.seit.ae2.service.StaffingService;
+import uk.ac.gla.seit.ae2.service.TrainingService;
+
 public class ApplicationController {
 
+    // Repositories (interfaces)
+    private RequirementRepository requirementRepository;
+    private TeacherRepository teacherRepository;
+
+    // Services
+    private RequirementService requirementService;
+    private StaffingService staffingService;
+    private TrainingService trainingService;
+
+    // UI
     private ConsoleUI ui;
 
     public void startup() {
         System.out.println("AE2 PTT System starting...");
 
-        // TODO (Integration): wire repositories + services once available.
-        // Example target wiring (after members merge their code):
-        // RequirementRepository reqRepo = new CsvRequirementRepository("requirements.csv");
-        // TeacherRepository teacherRepo = new CsvTeacherRepository("teachers.csv");
+        // ===== Integration wiring (replace TODO classes once E/D deliver implementations) =====
+        // TODO (E): instantiate repository implementations here, e.g.
+        // requirementRepository = new CsvRequirementRepository("requirements.csv");
+        // teacherRepository = new CsvTeacherRepository("teachers.csv");
         //
-        // RequirementService requirementService = new RequirementService(reqRepo);
-        // StaffingService staffingService = new StaffingService(reqRepo, teacherRepo);
-        // TrainingService trainingService = new TrainingService(teacherRepo);
+        // TODO (D): instantiate services here, once repositories are ready:
+        // requirementService = new RequirementService(requirementRepository);
+        // staffingService = new StaffingService(requirementRepository, teacherRepository);
+        // trainingService = new TrainingService(teacherRepository);
         //
+        // TODO (B): pass services into ConsoleUI:
         // ui = new ConsoleUI(requirementService, staffingService, trainingService);
-        // ui.run();
 
-        // Temporary placeholder so main branch always runs:
-        this.ui = new ConsoleUI();
-        this.ui.run();
+        // Temporary: keep main runnable even before implementations exist
+        ui = new ConsoleUI();
+        ui.run();
     }
 
     public void shutdown() {
-        // TODO (Integration): save data before exit via repositories.
         System.out.println("AE2 PTT System shutting down...");
+
+        // TODO (E): persist data on exit
+        // if (teacherRepository != null) teacherRepository.saveAll();
+        // if (requirementRepository != null) requirementRepository.saveAll();
     }
 }
