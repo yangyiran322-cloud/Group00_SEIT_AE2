@@ -1,0 +1,3 @@
+requirementId,moduleCode,subject,term,requiredQualification,hours,status,assignedTeacherId
+R001,CS101,Java,Term1,PhD,10,PENDING_ASSIGNMENT,
+R002,CS202,Database,Term2,MSc,8,PENDING_ASSIGNMENT,
