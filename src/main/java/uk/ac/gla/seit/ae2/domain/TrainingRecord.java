@@ -1,37 +1,40 @@
 package uk.ac.gla.seit.ae2.domain;
 
+import java.time.LocalDate;
+
+/**
+ * Represents a training record linked to a teacher.
+ */
 public class TrainingRecord {
-    private final String id;
-    private final String teacherId;
-    private final String requirementId;
-    private final String date;   // e.g., "2026-03-10"
-    private final String notes;
 
-    public TrainingRecord(String id, String teacherId, String requirementId, String date, String notes) {
-        this.id = id;
-        this.teacherId = teacherId;
-        this.requirementId = requirementId;
-        this.date = date;
-        this.notes = notes;
+    private String trainingName;
+    private LocalDate trainingDate;
+    private String description;
+
+    public TrainingRecord(String trainingName, LocalDate trainingDate, String description) {
+        this.trainingName = trainingName;
+        this.trainingDate = trainingDate;
+        this.description = description;
     }
 
-    public String getId() {
-        return id;
+    public String getTrainingName() {
+        return trainingName;
     }
 
-    public String getTeacherId() {
-        return teacherId;
+    public LocalDate getTrainingDate() {
+        return trainingDate;
     }
 
-    public String getRequirementId() {
-        return requirementId;
+    public String getDescription() {
+        return description;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public String getNotes() {
-        return notes;
+    @Override
+    public String toString() {
+        return "TrainingRecord{" +
+                "trainingName='" + trainingName + '\'' +
+                ", trainingDate=" + trainingDate +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
