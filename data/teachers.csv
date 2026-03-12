@@ -1,0 +1,3 @@
+teacherId,name,subjectExpertise,qualifications,status
+T001,John Smith,Java;OOP,PhD;PGCert,AVAILABLE
+T002,Alice Brown,Database;SQL,MSc,AVAILABLE
