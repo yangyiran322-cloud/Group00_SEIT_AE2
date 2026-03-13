@@ -9,7 +9,6 @@ import uk.ac.gla.seit.ae2.service.TrainingService;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -58,6 +57,8 @@ public class ConsoleUI {
                     default:
                         System.out.println("Invalid choice. Please enter a number between 1 and 6.");
                 }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid Input: " + e.getMessage());
             } catch (Exception e) {
                 System.out.println("Operation Failed: " + e.getMessage());
             }
@@ -92,10 +93,9 @@ public class ConsoleUI {
         String qual = scanner.nextLine().trim();
         int hours = readIntSafely("Enter Hours per Week: ");
 
-        // TODO: Waiting for D
-        // requirementService.submitRequirement(moduleCode, subject, term, qual, hours);
+        String reqId = requirementService.submitRequirement(moduleCode, subject, term, qual, hours);
 
-        System.out.println("[UI Test] Requirement input collected successfully! (Waiting for D's Service to save)");
+        System.out.println("Requirement submitted successfully! Assigned ID: [" + reqId + "]");
     }
 
     // ==========================================
@@ -107,12 +107,10 @@ public class ConsoleUI {
         System.out.println("========================================================================================================================");
 
         try {
-            // TODO: Waiting for D
-            // List<TeachingRequirement> requirements = requirementService.listAllRequirements();
-            List<TeachingRequirement> requirements = new ArrayList<>(); // 临时空列表，保证不报错
+            List<TeachingRequirement> requirements = requirementService.listAllRequirements();
 
-            if (requirements.isEmpty()) {
-                System.out.println("No teaching requirements found. (Or waiting for D's Service to return data)");
+            if (requirements == null || requirements.isEmpty()) {
+                System.out.println("No teaching requirements found.");
                 System.out.println("========================================================================================================================\n");
                 return;
             }
@@ -123,7 +121,8 @@ public class ConsoleUI {
 
             for (TeachingRequirement req : requirements) {
                 String statusDisplay = req.isPending() ? "PENDING" : "ASSIGNED";
-                String assignedTo = (req.getAssignedTeacherId() != null) ? req.getAssignedTeacherId() : "N/A";
+                String assignedTo = (req.getAssignedTeacherId() != null && !req.getAssignedTeacherId().isEmpty())
+                        ? req.getAssignedTeacherId() : "N/A";
                 System.out.printf("%-8s | %-12s | %-15s | %-10s | %-20s | %-8d | %-20s | %-12s%n",
                         req.getRequirementId(), req.getModuleCode(), req.getSubject(),
                         req.getTerm(), req.getRequiredQualification(), req.getHours(),
@@ -145,12 +144,10 @@ public class ConsoleUI {
         String qualification = scanner.nextLine().trim();
 
         try {
-            // TODO: Waiting for D
-            // List<Teacher> teachers = staffingService.searchAvailableTeachers(subject, qualification);
-            List<Teacher> teachers = new ArrayList<>(); // 临时空列表，保证不报错
+            List<Teacher> teachers = staffingService.searchAvailableTeachers(subject, qualification);
 
-            if (teachers.isEmpty()) {
-                System.out.println("No suitable candidate exists. (Or waiting for D's Service to return data)");
+            if (teachers == null || teachers.isEmpty()) {
+                System.out.println("No suitable candidate exists for the specified subject and qualification.");
                 return;
             }
 
@@ -182,11 +179,17 @@ public class ConsoleUI {
         String teacherId = scanner.nextLine().trim();
 
         try {
-            // TODO: Waiting for D
-            // staffingService.assignTeacher(reqId, teacherId);
-            System.out.println("[UI Test] Success! Teacher assigned! (Waiting for D's Service to process)");
+            boolean success = staffingService.assignTeacher(reqId, teacherId);
+
+            if (success) {
+                System.out.println("Success! Teacher [" + teacherId + "] has been assigned to Requirement [" + reqId + "].");
+            } else {
+                System.out.println("Assignment Failed: Teacher is either not available or does not match requirements.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid Input: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Assignment Failed: " + e.getMessage());
+            System.out.println("Assignment Error: " + e.getMessage());
         }
     }
 
@@ -205,16 +208,22 @@ public class ConsoleUI {
         String description = scanner.nextLine().trim();
 
         try {
-            // TODO: Waiting for D
-            // trainingService.recordTraining(teacherId, trainingName, date, description);
-            System.out.println("[UI Test] Training record added! (Waiting for D's Service to process)");
+            boolean success = trainingService.recordTraining(teacherId, trainingName, date, description);
+
+            if (success) {
+                System.out.println("Training record successfully added for Teacher [" + teacherId + "]!");
+            } else {
+                System.out.println("Failed to save the training record to the repository.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid Input: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Failed to record training: " + e.getMessage());
+            System.out.println("System Error: " + e.getMessage());
         }
     }
 
     // ==========================================
-    // method: get safe
+    // Tools: get safe
     // ==========================================
     private int readIntSafely(String prompt) {
         while (true) {
