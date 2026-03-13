@@ -11,8 +11,8 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("AE2 PTT System starting...");
 
-        CsvRequirementRepository reqRepo = new CsvRequirementRepository("requirements.csv");
-        CsvTeacherRepository teacherRepo = new CsvTeacherRepository("teachers.csv");
+        CsvRequirementRepository reqRepo = new CsvRequirementRepository("data/requirements.csv");
+        CsvTeacherRepository teacherRepo = new CsvTeacherRepository("data/teachers.csv");
 
         reqRepo.loadAll();
         teacherRepo.loadAll();
@@ -27,7 +27,7 @@ public class Main {
 
         System.out.println("Saving data to CSV files...");
         reqRepo.saveAll();
-        teacherRepo.saveAll();1
+        teacherRepo.saveAll();
         System.out.println("Data saved successfully. Goodbye!");
     }
 }
